@@ -7,7 +7,7 @@ public class Element {
 
 	public static final int F_LIST_ORDERED = 1;
 
-	public enum Type {
+	public enum ElementType {
 		
 		// Block Element Types
 		
@@ -39,13 +39,13 @@ public class Element {
 		
 		private final int value;
 
-	    private Type(int value) {
+	    private ElementType(int value) {
 	        this.value = value;
 	    }
 	    
-	    private static final Type[] TypeValues = Type.values();
-	    public static Type fromInteger(int x) {
-	    	for (Type type : TypeValues) {
+	    private static final ElementType[] TypeValues = ElementType.values();
+	    public static ElementType fromInteger(int x) {
+	    	for (ElementType type : TypeValues) {
 	    		if (type.value == x) {
 	    			return type;
 	    		}
@@ -57,13 +57,13 @@ public class Element {
 	String text;
 	Map<String, String> attributes = new HashMap<String, String>();
 	Element[] children;
-	Type type;
+	ElementType type;
 	Element parent;
 	int nestLevel = 0;
 	
 	public Element(String text, int type) {
 		this.text = text;
-		this.type = Type.fromInteger(type);
+		this.type = ElementType.fromInteger(type);
 	}
 	
 	public void setParent(Element element) {
@@ -97,7 +97,7 @@ public class Element {
 		return 0;
 	}
 	
-	public Type getType() {
+	public ElementType getElementType() {
 		return type;
 	}
 	

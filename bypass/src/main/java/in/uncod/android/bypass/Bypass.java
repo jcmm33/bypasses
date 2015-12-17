@@ -18,7 +18,7 @@ import android.text.style.URLSpan;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
 import android.util.TypedValue;
-import in.uncod.android.bypass.Element.Type;
+import in.uncod.android.bypass.Element.ElementType;
 import in.uncod.android.bypass.style.HorizontalLineSpan;
 
 import java.util.Map;
@@ -105,10 +105,10 @@ public class Bypass {
 	private CharSequence recurseElement(Element element, int indexWithinParent, int numberOfSiblings,
 			ImageGetter imageGetter) {
 
-		Type type = element.getType();
+		ElementType type = element.getElementType();
 
 		boolean isOrderedList = false;
-		if (type == Type.LIST) {
+		if (type == ElementType.LIST) {
 			String flagsStr = element.getAttribute("flags");
 			if (flagsStr != null) {
 				int flags = Integer.parseInt(flagsStr);
@@ -138,21 +138,21 @@ public class Bypass {
 		String text = element.getText();
 		if (element.size() == 0
 			&& element.getParent() != null
-			&& element.getParent().getType() != Type.BLOCK_CODE) {
+			&& element.getParent().getElementType() != ElementType.BLOCK_CODE) {
 			text = text.replace('\n', ' ');
 		}
 
 		// Retrieve the image now so we know whether we're going to have something to display later
 		// If we don't, then show the alt text instead (if available).
 		Drawable imageDrawable = null;
-		if (type == Type.IMAGE && imageGetter != null && !TextUtils.isEmpty(element.getAttribute("link"))) {
+		if (type == ElementType.IMAGE && imageGetter != null && !TextUtils.isEmpty(element.getAttribute("link"))) {
 			imageDrawable = imageGetter.getDrawable(element.getAttribute("link"));
 		}
 
 		switch (type) {
 			case LIST:
 				if (element.getParent() != null
-					&& element.getParent().getType() == Type.LIST_ITEM) {
+					&& element.getParent().getElementType() == ElementType.LIST_ITEM) {
 					builder.append("\n");
 				}
 				break;
@@ -206,20 +206,20 @@ public class Bypass {
 		// element itself), hence subtracting a number from that count gives us the index
 		// of the last child within the parent.
 		if (element.getParent() != null || indexWithinParent < (numberOfSiblings - 1)) {
-			if (type == Type.LIST_ITEM) {
+			if (type == ElementType.LIST_ITEM) {
 				if (element.size() == 0 || !element.children[element.size() - 1].isBlockElement()) {
 					builder.append("\n");
 				}
 			}
-			else if (element.isBlockElement() && type != Type.BLOCK_QUOTE) {
-				if (type == Type.LIST) {
+			else if (element.isBlockElement() && type != ElementType.BLOCK_QUOTE) {
+				if (type == ElementType.LIST) {
 					// If this is a nested list, don't include newlines
-					if (element.getParent() == null || element.getParent().getType() != Type.LIST_ITEM) {
+					if (element.getParent() == null || element.getParent().getElementType() != ElementType.LIST_ITEM) {
 						builder.append("\n");
 					}
 				}
 				else if (element.getParent() != null
-					&& element.getParent().getType() == Type.LIST_ITEM) {
+					&& element.getParent().getElementType() == ElementType.LIST_ITEM) {
 					// List items should never double-space their entries
 					builder.append("\n");
 				}
